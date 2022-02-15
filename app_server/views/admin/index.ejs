@@ -1,0 +1,97 @@
+
+<script type="text/javascript" >
+  
+  $(document).ready(function() {
+    $.getJSON('/admin/buaygelir/').then(res => {
+      console.log(res)
+          odemelerbuAyFunc(res[0]);
+    });
+    $.getJSON('/admin/tumgelir/').then(res => {
+      console.log(res)
+          odemelerToplamFunc(res[0]);
+    });
+  });
+
+  function odemelerbuAyFunc(res){
+          $('#ayyapilanodemelerToplam').html(res.yapilanodemeler+" TL" );
+          $('#aytoplam').html(res.ucrets+" TL" );         
+          $('#aybekleyenodemelerToplam').html(res.kalanodemeler+" TL" );
+  }
+
+  function odemelerToplamFunc(res){
+          $('#yapilanodemelerToplam').html(res.yapilanodemeler+" TL" );
+          $('#toplam').html(res.ucrets+" TL" );         
+          $('#bekleyenodemelerToplam').html(res.kalanodemeler+" TL" );
+  }
+    </script>
+      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+        <h1 class="h2">Anasayfa</h1>
+      </div>
+      <div class="row">      
+        <div class="col-lg-12">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card text-white bg-secondary  mb-3" style="max-width: 18rem;">
+                      <div class="card-header">Toplam </div>
+                      <div class="card-body">
+                        <h5 class="card-title" id="toplam"></h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="card text-white bg-success  mb-3" style="max-width: 18rem;">
+                      <div class="card-header">Yapılan Ödemeler</div>
+                      <div class="card-body">
+                        <h5 class="card-title" id="yapilanodemelerToplam"></h5>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-lg-4">
+                    <div class="card text-white bg-danger mb-3" style="max-width: 18rem;">
+                      <div class="card-header">Beklenen Ödemeler</div>
+                      <div class="card-body">
+                        <h5 class="card-title" id="bekleyenodemelerToplam"></h5>
+                        </div>
+                    </div>
+                  </div>
+            </div>
+            
+        </div>
+   
+    
+    </div>
+
+    <div class="row">      
+      <div class="col-lg-12">
+          <div class="row">
+              <div class="col-lg-4">
+                  <div class="card text-white bg-warning  mb-3" style="max-width: 18rem;">
+                    <div class="card-header">Bu Ay Toplam </div>
+                    <div class="card-body">
+                      <h5 class="card-title" id="aytoplam"></h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="card text-white bg-dark  mb-3" style="max-width: 18rem;">
+                    <div class="card-header">Bu Ay Yapılan Ödemeler</div>
+                    <div class="card-body">
+                      <h5 class="card-title" id="ayyapilanodemelerToplam"></h5>
+                    </div>
+                  </div>
+                </div>
+                <div class="col-lg-4">
+                  <div class="card text-white bg-info mb-3" style="max-width: 18rem;">
+                    <div class="card-header">Bu Ay Beklenen Ödemeler</div>
+                    <div class="card-body">
+                      <h5 class="card-title" id="aybekleyenodemelerToplam"></h5>
+                      </div>
+                  </div>
+                </div>
+          </div>
+          
+      </div>
+ 
+  
+  </div>
+

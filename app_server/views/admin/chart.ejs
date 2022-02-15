@@ -1,0 +1,41 @@
+<div class="row">      
+    <div class="col-lg-9">
+  <canvas id="chart" ></canvas>
+</div> 
+</div>
+<script     src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.3.0/Chart.bundle.js">    </script>
+<script>
+
+$.ajax({
+        url: "http://localhost:8004/admin/chart",
+        dataType: "json",
+        success: function(res)
+        {
+          var response = $.parseJSON(res);
+
+          console.log(response);
+          console.log(response.result);
+        
+            var ctx = document.getElementById("chart");
+            var myBarChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: response.data.labels,
+                    datasets: [{
+                        label: 'Number of Active Customers',
+                        data: response.data.chartData,
+                        backgroundColor: [
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(255, 99, 132, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(255,99,132,1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                }
+            });
+        }
+});
+</script>

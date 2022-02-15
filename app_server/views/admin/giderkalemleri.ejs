@@ -1,0 +1,273 @@
+    
+ <script type="text/javascript" >
+       $(document).ready(function() {
+        $.getJSON('/admin/giderkalemlerigetir/').then(res => {
+          giderkalemleriFunc(res);
+             });
+
+   $('#giderkalemigir').click(function () {
+        var data=$("#giderkalemi").val(); 
+        if(data !=""){
+            $.post('/admin/giderkalemigir/',{"giderkalemi":data}).then(res => {
+            $("#giderkalemi").val();
+            giderkalemleriFunc(res);
+            });
+        }
+         
+    });
+
+
+    
+$('#tableGider').on( 'click', 'button', function () {
+       var data = $(this).attr('data-id'); 
+       if(typeof(data) != "undefined" && data !==""){
+        $.getJSON('/admin/giderkalemleridetaygetir/'+data).then(res => {
+            giderGirFunc(res);
+          });
+       }
+         
+   
+    } );
+
+    $('#gidergir').click(function () {
+        var formVeri=$("#gidergirForm").serialize(); 
+         $.post('/admin/gidergir/',formVeri).then(res => {
+          giderGirFunc(res);
+          $('#aciklama').val("");
+          $('#tarih').val("");
+          $('#gider').val("");
+    });
+    });
+
+});
+ 
+function giderkalemisil(id,vals){
+  $.get('/admin/giderkalemisil/'+id+"/"+vals).then(res => {
+    giderkalemleriFunc(res);
+    }); 
+}
+
+function giderkalemleriFunc(res){
+  $('#gidertutartumTamami').html(res.gidertutartumTamami);
+  $('#gidertutartumAy').html(res.gidertutartumAy);
+
+    $('#giderkalemleriList').html("");
+        z=0;
+          res.data.forEach(element => {
+              z++;
+              if(element.durum==false){
+                z--;
+              buttonOdemeIptal='<button type="button" class="btn btn-danger" onclick="giderkalemisil('+"'"+element._id+"','1'"+')" ><i class="bi bi-patch-minus"></i></button>';
+              classs='class="table-secondary"';
+              $('#giderkalemleriList').append('<tr '+classs+'><th scope="row">0</th><td><button class="btn btn-primary" data-id="'+element._id+'"  data-bs-toggle="modal" data-bs-target="#exampleModal">'+element.gideradi+'</button></td><td>'+buttonOdemeIptal+'</td></tr>');
+
+            }   
+            else{
+                buttonOdemeIptal='<button type="button" class="btn btn-success" onclick="giderkalemisil('+"'"+element._id+"','0'"+')" ><i class="bi bi-patch-plus"></i></button>';
+              classs='';
+              $('#giderkalemleriList').append('<tr '+classs+'><th scope="row">'+z+'</th><td><button class="btn btn-primary" data-id="'+element._id+'"  data-bs-toggle="modal" data-bs-target="#exampleModal">'+element.gideradi+'</button><td>'+buttonOdemeIptal+'</td></tr>');
+
+            }
+
+          });
+ 
+
+}
+
+
+
+function gidersil(id,vals){
+  $.get('/admin/gidersil/'+id+"/"+vals).then(res => {
+      giderGirFunc(res);
+    }); 
+}
+function giderGirFunc(res){
+  console.log(res)
+  $('#_id').val(res.data._id);
+  
+  $('#giderdetaytum').html(res.gidertutartum);
+  $('#giderdetayay').html(res.gidertutaray);
+  $('#nameHead').html(res.data.gideradi);
+
+    $('#gidergirList').html("");
+        z=0;
+
+        res.data.giderler.forEach(element => {
+
+            zaman=new Date(element.tarih);
+            zaman= zaman.toLocaleDateString('en-GB', {
+                      year: 'numeric',
+                      month: '2-digit',
+                      day: '2-digit'
+                  }).replace(/\./g, '/'); 
+
+              z++;
+              if(element.durum==false){
+                z--;
+              buttonOdemeIptal='<button type="button" class="btn btn-danger" onclick="gidersil('+"'"+element._id+"','1'"+')" ><i class="bi bi-patch-minus"></i></button>';
+              classs='class="table-secondary"';
+              $('#gidergirList').append('<tr '+classs+'><th scope="row">0</th><td>'+zaman+'</td><td>'+element.aciklama+'</td><td>'+element.gider+'</td><td>'+buttonOdemeIptal+'</td></tr>');
+
+            }   
+            else{
+                buttonOdemeIptal='<button type="button" class="btn btn-success" onclick="gidersil('+"'"+element._id+"','0'"+')" ><i class="bi bi-patch-plus"></i></button>';
+              classs='';
+              $('#gidergirList').append('<tr '+classs+'><th scope="row">0</th><td>'+zaman+'</td><td>'+element.aciklama+'</td><td>'+element.gider+'</td><td>'+buttonOdemeIptal+'</td></tr>');
+
+            }
+
+          });
+ 
+
+
+}
+ </script>
+     
+      <div class="container">
+             
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+           <h1 class="h2">Gider İşlemleri</h1>
+   
+         </div>
+          <div class="row justify-content-md-center ">
+             
+              <div class="col col-lg-4">
+                <form  name="giderkalemigirForm" id="giderkalemigirForm" >
+                    <div class="mb-3">
+                          <label class="form-label">Gider Kalemi Gir</label>
+                          <input type="text" name="giderkalemi" id="giderkalemi" class="form-control" oninvalid="this.setCustomValidity('Zorunlu Alan doldurunuz')" required>
+                          <label class="form-label"></label>
+                          <input type="button" id="giderkalemigir" name="giderkalemigir" class="form-control btn btn-danger" value="Gider Kalemi Gir">
+
+                       </div>
+
+          </div>
+
+        </form>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-6">
+                <table class="table" id="tableGider">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Gider Kalemi</th>
+                      <th scope="col">işlemler</th>
+                    </tr>
+                  </thead>
+                  <tbody id="giderkalemleriList">
+             
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="col-lg-6">
+
+                <div class="row">
+                    <div class="card text-white bg-primary  mb-3" style="max-width: 18rem;">
+                      <div class="card-header">Tüm Giderleri </div>
+                      <div class="card-body">
+                        <h5 class="card-title" id="gidertutartumTamami"></h5>
+                      </div>
+                    </div>
+                </div>
+
+                
+                <div class="row">
+                    <div class="card text-white bg-primary  mb-3" style="max-width: 18rem;">
+                      <div class="card-header">Aylık Giderleri </div>
+                      <div class="card-body">
+                        <h5 class="card-title" id="gidertutartumAy"></h5>
+                      </div>
+                    </div>
+                  </div>
+              </div>
+             
+        </div>
+      
+
+
+        
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="nameHead"></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!--ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss-->
+          <div class="row">  
+            <div class="col-lg-3">
+                <div class="row">
+                    <div class="card text-white bg-info mb-12" style="max-width: 18rem;">
+                        <div class="card-body">
+                          <form  name="gidergirForm" id="gidergirForm" >
+                            <input type="hidden" name="_id"  id="_id">
+        
+                            <div class="form-group">
+                                <h5 class="card-title">Açıklama Gİriniz</h5>
+                                <textarea class="form-control" name="aciklama" id="aciklama" rows="3"></textarea>
+                              </div>
+                                  <br> <h5 class="card-title">Tarihi</h5>
+                            <input type="text" name="tarih" class="form-control " id="tarih" oninvalid="this.setCustomValidity('Zorunlu Alan doldurunuz')"  required>
+                           <br> <h5 class="card-title">Miktar</h5>
+                          <input type="text" name="gider" id="gider" class="form-control "oninvalid="this.setCustomValidity('Zorunlu Alan doldurunuz')"  required>
+                          <br> 
+                          <input type="button" id="gidergir" name="gidergir" class="btn btn-danger" value="Ödeme Gir">
+                        </form>
+                      </div>
+                      </div>
+                </div>
+
+                <div class="row">
+                    <div class="card text-white bg-primary  mb-3" style="max-width: 18rem;">
+                      <div class="card-header">Tüm Giderleri </div>
+                      <div class="card-body">
+                        <h5 class="card-title" id="giderdetaytum"></h5>
+                      </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="card text-white bg-success  mb-3" style="max-width: 18rem;">
+                      <div class="card-header">Bu Ay Toplam </div>
+                      <div class="card-body">
+                        <h5 class="card-title" id="giderdetayay"></h5>
+                      </div>
+                  </div>
+                </div>
+            </div>    
+            <div class="col-lg-9">
+               <div class="row">
+                    <div class="col-lg-12">
+                        <table class="table">
+                          <thead>
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Tarih</th>
+                                <th scope="col">Açıklama</th>
+                                <th scope="col">Miktar</th>
+                                <th scope="col">işlem</th>
+                              </tr>
+                          </thead>
+                          <tbody id="gidergirList">
+                     
+                          </tbody>
+                        </table>
+                      </div>
+                      
+                </div>
+            </div>
+            
+        
+          </div>
+          <!--asdasdasdddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd-->
+    </div> 
+        <div class="modal-footer">
+
+        </div>
+      </div>
+    </div>
+  </div>
